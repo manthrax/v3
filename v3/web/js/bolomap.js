@@ -1,5 +1,11 @@
-define(["text!Everard+Island.map.txt"],function(bmap){
-
+define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,ascmap){
+	
+	String.prototype.asciiCharAt = function(index) {
+		var charCode = this.charCodeAt(index);
+		while (charCode>255) charCode>>=8;
+		return parseInt(charCode);
+	}
+	
 	function getNib(buf,idx,nidx){
 		var sidx=idx+(nidx>>1);
 		var b=buf[sidx];
@@ -9,10 +15,15 @@ define(["text!Everard+Island.map.txt"],function(bmap){
 		return (b&0xF0)>>4;
 	}
 
-	var imap=new Array(bmap.length/2);
+	var aimap=new Array(ascmap.length/2);
 	var mi=0;
 	var hexStr="0123456789abcdef";
-	for(t=0;t<imap.length;t++)imap[t]=(hexStr.indexOf(bmap[mi++])<<4)|hexStr.indexOf(bmap[mi++]); //.charCodeAt(t)&255;
+	for(t=0;t<aimap.length;t++)aimap[t]=(hexStr.indexOf(ascmap[mi++])<<4)|hexStr.indexOf(ascmap[mi++]); //.charCodeAt(t)&255;
+	
+	var imap=new Array(bmap.length);
+	for(t=0;t<imap.length;t++)imap[t]=bmap.asciiCharAt(t);
+	
+	imap=aimap;
 /*
 	var imap=new Array(bmap.length);
 	for(t=0;t<imap.length;t++)imap[t]=bmap.charAt(t).charCodeAt();
