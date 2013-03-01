@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <link href="v2.css" rel="stylesheet" type="text/css">        
+        <title>v3</title> 
+        <script type="text/javascript" src="js/socket.io-client/dist/socket.io.js"></script>
+        <script type="text/javascript" src="js/util/require.js" data-main="js/index"></script>
+        <script type="text/javascript" src="js/util/tween.js" ></script>
+        <script type="text/javascript" src="js/network.js"></script>
+    </head>
+    <body onbeforeunload="console.log('app closed.');" oncontextmenu="return false;" style="cursor: crosshair">
+	<div id="display-frame">
+		<div class="uiElem" id="fpsContainer" style="top:3px;left:3px;">
+			<div><span id="fps"></span></div>
+		</div>
+		<canvas id="canvas" width="1024" height="768" style="width: 100%; height: 100%;"></canvas>
+	</div>
+	</body>
+</html>

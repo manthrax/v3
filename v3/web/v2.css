@@ -1,0 +1,98 @@
+/* 
+    Document   : v2
+    Created on : Feb 16, 2013, 3:15:48 AM
+    Author     : thrax
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#shaderIFrame , #imageCache {
+    width: 0px;
+    height: 0px;
+    visibility:hidden;
+    background-color: #d8da3d 
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    background-color: black;
+    font-family: sans-serif;
+    overflow: hidden;
+    color: #fff;
+}
+
+a {
+    color: #fff;
+}
+
+video {
+    display: no4ne;
+}
+
+CANVAS {
+    background-color: black;
+}
+
+.uiTitle {
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 512px;
+    height: 175px;
+
+    margin: auto;
+
+    z-index: 2;
+    background-color: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    padding: 1px;
+    color: yellow;
+
+    text-align: center;
+    visibility: hidden;
+    
+}
+
+.uiComponent, .uiElem{
+    z-index: 2;
+    color: yellow;
+    font-family: sans-serif;
+    font-size: small;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 0px;
+    padding: 0px;
+}
+
+.uiElem {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+    overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    border-radius: 6px;
+    padding: 1px;
+}
+
+
+#viewContainer {
+    width: 100%;
+    height: 100%;
+}
