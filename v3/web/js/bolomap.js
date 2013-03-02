@@ -1,11 +1,4 @@
 define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,ascmap){
-	
-	String.prototype.asciiCharAt = function(index) {
-		var charCode = this.charCodeAt(index);
-		//while (charCode>255) charCode>>=8;
-		return parseInt(charCode&0xFF);
-	}
-	
 	function getNib(buf,idx,nidx){
 		var sidx=idx+(nidx>>1);
 		var b=buf[sidx];
@@ -15,22 +8,23 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 		return (b&0xF0)>>4;
 	}
 
-	var aimap=new Array(ascmap.length/2);
-	var mi=0;
-	var hexStr="0123456789abcdef";
-	for(t=0;t<aimap.length;t++)aimap[t]=(hexStr.indexOf(ascmap[mi++])<<4)|hexStr.indexOf(ascmap[mi++]); //.charCodeAt(t)&255;
-	
-	var imap=new Array(bmap.length);
-	for(t=0;t<imap.length;t++)imap[t]=bmap.asciiCharAt(t);
-	
-	//for(t=0;t<imap.length;t++)if(imap[t]!=aimap[t]){
-		//console.log("asc:"+imap[t]+"!="+aimap[t]);
-	//}
-	imap=aimap;
-/*
-	var imap=new Array(bmap.length);
-	for(t=0;t<imap.length;t++)imap[t]=bmap.charAt(t).charCodeAt();
-	*/
+	var imapname;
+	var imap;
+
+	$.ajax({
+		url: '/v3/maps/',
+		async: false,
+		data: { filename: "zeddo.map" },
+		dataType: "json"
+	}).done(function(data) {
+		if (data.error) {
+			console.log(data.error);
+			return;
+		}
+
+		imapname = data.mapname;
+		imap = data.map;
+	});
 	
 	var tag='BMAPBOLO';
 	var tagValid=true;
