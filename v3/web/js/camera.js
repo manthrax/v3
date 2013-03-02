@@ -134,7 +134,7 @@ define([
 
         this._angles = vec3.create();
         this._position = vec3.create();
-        this.speed = 300;
+        this.speed = 700;
         this._pressedKeys = new Array(128);
         this._viewMat = mat4.create();
         this._cameraMat = mat4.create();

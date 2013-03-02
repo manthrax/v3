@@ -181,6 +181,9 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 		//console.log(row);
 	}
 	return{
-		map: map
+		map: map,
+		pillboxes: pills,
+		bases: bases,
+		starts: starts
 	}
 })
