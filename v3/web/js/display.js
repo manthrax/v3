@@ -17,7 +17,6 @@ define([
 	var orthoViewProjection = new Float32Array(16);
 	var orthoWorldViewProjection = new Float32Array(16);
 
-
 	var orthoViewInverse = new Float32Array(16);
 	var orthoProjectionInverse = new Float32Array(16);
 	var orthoViewProjectionInverse = new Float32Array(16);
@@ -41,9 +40,17 @@ define([
 	var worldInverseTranspose = new Float32Array(16);
 	var viewInverseTranspose = new Float32Array(16);
 	
+	var _display;
+	function v3cp(to,from){
+		if(!from)return [to[0],to[1],to[2]];
+		to[0]=from[0];
+		to[1]=from[1];
+		to[2]=from[2];
+		return to;
+	}
     var display = function (gl, canvas) {
 		vaoExtension = gl.getExtension("OES_vertex_array_object");
-        
+        _display=this;
 		this.camera = new camera.FlyingCamera(canvas);
         /*this.camera = new camera.ModelCamera(canvas);
         this.camera.distance = 4;
@@ -62,6 +69,8 @@ define([
 		gl.cullFace(gl.BACK);
 		gl.enable(gl.CULL_FACE);
        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	   
+	   loadSession();
     };
 	
 	display.prototype.world=world;
@@ -79,7 +88,20 @@ define([
 	window.onresize=function(){
 		display.prototype.resize(canvas.gl,canvas);
 	}
-
+	window.loadSession=function(){
+		var state=localStorage.state;
+		state = JSON.parse(state);
+		v3cp(_display.camera._position , state.cameraPosition);
+		v3cp(_display.camera._angles , state.cameraAngles);
+	}
+	window.saveSession=function(){
+		console.log('display app closed.');
+		var state={
+			cameraPosition:v3cp(_display.camera._position),
+			cameraAngles:v3cp(_display.camera._angles)
+		}
+		localStorage.state=JSON.stringify(state);
+	}
 	function orthoLookAt(at,from,up,rng,dpth){
 		mat4.translation(orthoWorld, [0,0,0]);
 		mat4.inverse(world,orthoWorldInverse);
@@ -95,7 +117,18 @@ define([
 		mat4.inverse(orthoViewProjectionInverse, orthoViewProjection);
 		mat4.multiply(orthoWorld, orthoViewProjection, orthoWorldViewProjection);
 	}
-
+	function nv3(){return [0,0,0];}
+	var v3t0=nv3();
+	var v3t1=nv3();
+	var v3t2=nv3();
+	var v3t3=nv3();
+	var v3t4=nv3();
+	var v3t5=nv3();
+	var v3t6=nv3();
+	var v3t7=nv3();
+	var v3t8=nv3();
+	var v3t9=nv3();
+	
 	function setViewProjection(view,projection){
 		
 		mat4.inverse(view,viewInverse);
@@ -103,6 +136,28 @@ define([
 		mat4.inverse(projection,projectionInverse);
 		mat4.multiply(projection, view, viewProjection);
 		mat4.inverse( viewProjection,viewProjectionInverse);
+		
+		//Compute frustum
+		/*
+		fast.matrix4.getAxis(v3t3, viewInverse, 0); // x
+		fast.matrix4.getAxis(v3t4, viewInverse, 1); // y;
+		fast.matrix4.getAxis(v3t5, viewInverse, 2); // z;
+		fast.matrix4.getAxis(v3t6, viewInverse, 3); // z;
+
+
+		matrixSetRowVector3(cameraMatrix,0,v3t3)
+		matrixSetRowVector3(cameraMatrix,1,v3t4)
+		matrixSetRowVector3(cameraMatrix,2,v3t5)
+		matrixSetRowVector3(cameraMatrix,3,g_eyePosition);
+		cameraMatrix[15]=1.0;
+		*/
+		//mat4.transpose(viewInverse,cameraMatrix);
+		
+		mat4.getRowV3(viewInverse, 0,v3t3); // x
+		mat4.getRowV3(viewInverse, 1,v3t4 ); // y;
+		mat4.getRowV3(viewInverse, 2,v3t5 ); // z;
+		mat4.getRowV3(viewInverse, 3,v3t6 ); // z;
+	
 	}
 
 	function setWorld(nworld){
@@ -235,6 +290,14 @@ define([
 		}
 		return m;
 	};
+    return {
+        display: display
+    };
+});
+
+
+
+
 	/*
 
 	tdl.models.Model.prototype.applyUniforms_ = function(opt_uniforms) {
@@ -302,7 +365,3 @@ define([
 		  this.mode, buffers.indices.totalComponents(), gl.UNSIGNED_SHORT, 0);
 	};
 */
-    return {
-        display: display
-    };
-});

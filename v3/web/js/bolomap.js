@@ -2,8 +2,8 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 	
 	String.prototype.asciiCharAt = function(index) {
 		var charCode = this.charCodeAt(index);
-		while (charCode>255) charCode>>=8;
-		return parseInt(charCode);
+		//while (charCode>255) charCode>>=8;
+		return parseInt(charCode&0xFF);
 	}
 	
 	function getNib(buf,idx,nidx){
@@ -23,6 +23,9 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 	var imap=new Array(bmap.length);
 	for(t=0;t<imap.length;t++)imap[t]=bmap.asciiCharAt(t);
 	
+	//for(t=0;t<imap.length;t++)if(imap[t]!=aimap[t]){
+		//console.log("asc:"+imap[t]+"!="+aimap[t]);
+	//}
 	imap=aimap;
 /*
 	var imap=new Array(bmap.length);
@@ -90,7 +93,7 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 	var units=pills.concat(bases.concat(starts));
 	for(var ui=0;ui<units.length;ui++){
 		var u=units[ui];
-		console.log("Unit:"+u.x+","+u.y);
+		//console.log("Unit:"+u.x+","+u.y);
 		var addr=(u.y*256)+u.x;
 		var cell=map[addr];
 		if(cell.length==1){
@@ -109,7 +112,7 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 			break;
 		}
 		datalen-=4;
-		console.log("se:"+startx+","+endx);
+		//console.log("se:"+startx+","+endx);
 		var nibidx=0;
 		var nrun=0;
 		var ndif=0;

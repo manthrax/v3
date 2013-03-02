@@ -30,6 +30,7 @@
 
 // Type declarations
 var MatrixArray = (typeof Float32Array !== 'undefined') ? Float32Array : Array, // Fallback for systems that don't support TypedArrays
+//var MatrixArray = Array, // Fallback for systems that don't support TypedArrays
     glMatrixArrayType = MatrixArray, // For Backwards compatibility
     vec3 = {},
     mat3 = {},
@@ -461,6 +462,14 @@ mat3.transpose = function (mat, dest) {
     dest[8] = mat[8];
     return dest;
 };
+
+mat4.getRowV3 = function(mat,row,dest){
+	row*=4;
+	dest[0]=mat[row++];
+	dest[1]=mat[row++];
+	dest[2]=mat[row++];
+	return dest;
+}
 
 /*
  * mat3.toMat4
