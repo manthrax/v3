@@ -162,7 +162,7 @@ define([
 		cameraMatrix[15]=1.0;
 		*/
             //mat4.transpose(viewInverse,cameraMatrix);
-		
+            
             mat4.getRowV3(viewInverse, 0,v3t3); // x
             mat4.getRowV3(viewInverse, 1,v3t4 ); // y;
             mat4.getRowV3(viewInverse, 2,v3t5 ); // z;
@@ -179,7 +179,50 @@ define([
             mat4.multiply(viewProjection, world, worldViewProjection);
             mat4.inverse(worldViewProjection,worldViewProjectionInverse);
         }
+        
+        display.prototype.makePlaneBatch=function(r,z){
+            var planeData=display.geomBatch(
+                [-r,-r,z,
+                r,-r,z,
+                r, r,z,
+                -r, r,z],
+                [0,1,2, 2,3,0],
+                [0,0,-1,
+                0,0,-1,
+                0,0,-1,
+                0,0,-1],
+                [0,0, 1,0, 1,1, 0,1]);
+            return planeData;
+        }
 
+        display.prototype.instanceMesh = function(mesh,mat,onto){
+            var vbase=onto.vertices.length;
+            onto.vertices = onto.vertices.concat(mesh.vertices);
+            var vend=onto.vertices.length;
+            onto.normals = onto.normals.concat(mesh.normals);
+            onto.uvs = onto.uvs.concat(mesh.uvs);
+            var ibase=onto.indices.length;
+            onto.indices = onto.indices.concat(mesh.indices);
+            var iend=onto.indices.length;
+            var vtop=vbase/3;
+            for(var t=ibase;t<iend;t++){
+                onto.indices[t]+=vtop;
+            }
+            for(var t=vbase;t<vend;t+=3){
+                var vt=onto.vertices.slice(t,t+3);
+                mat4.multiplyVec3(mat,vt);
+                for(var i=0;i<3;i++)onto.vertices[t+i]=vt[i];
+            }
+        }
+
+        display.prototype.geomBatch = function(v,i,n,u){
+            return {
+                vertices:v?v:[],
+                indices:i?i:[],
+                normals:n?n:[],
+                uvs:u?u:[]
+            }
+        }
         display.prototype.setWorld=setWorld;
         display.prototype.setViewProjection=setViewProjection;
 	
@@ -263,11 +306,11 @@ define([
                     var uniforms=this.shader.uniform;
                     var shader=this.shader;
                     for(var u in uniforms){
-					
+			
                         if(go[u]!=undefined){
                             shader.setUniform(u,go[u]);
                         }else if(display.prototype[u]!=undefined){
-                            shader.setUniform(u,display.prototype[u]);					
+                            shader.setUniform(u,display.prototype[u]);				
                         }else if(this[u]!=undefined){
                             shader.setUniform(u,this[u]);
                         }else if(shader[u]!=undefined){

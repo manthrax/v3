@@ -96,7 +96,7 @@ def main():
 		else:
 			dim=dy
 		
-		uvscl = aTileDim / dim
+		uvscl = (aTileDim*0.98) / dim
 		for f in me.faces:
 			for u in f.uv:
 				u[0]=((u[0]-nx)*uvscl)+tox
