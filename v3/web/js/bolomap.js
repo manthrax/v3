@@ -1,5 +1,11 @@
-define(["text!Everard+Island.map.txt"],function(bmap){
-
+define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,ascmap){
+	
+	String.prototype.asciiCharAt = function(index) {
+		var charCode = this.charCodeAt(index);
+		//while (charCode>255) charCode>>=8;
+		return parseInt(charCode&0xFF);
+	}
+	
 	function getNib(buf,idx,nidx){
 		var sidx=idx+(nidx>>1);
 		var b=buf[sidx];
@@ -9,10 +15,18 @@ define(["text!Everard+Island.map.txt"],function(bmap){
 		return (b&0xF0)>>4;
 	}
 
-	var imap=new Array(bmap.length/2);
+	var aimap=new Array(ascmap.length/2);
 	var mi=0;
 	var hexStr="0123456789abcdef";
-	for(t=0;t<imap.length;t++)imap[t]=(hexStr.indexOf(bmap[mi++])<<4)|hexStr.indexOf(bmap[mi++]); //.charCodeAt(t)&255;
+	for(t=0;t<aimap.length;t++)aimap[t]=(hexStr.indexOf(ascmap[mi++])<<4)|hexStr.indexOf(ascmap[mi++]); //.charCodeAt(t)&255;
+	
+	var imap=new Array(bmap.length);
+	for(t=0;t<imap.length;t++)imap[t]=bmap.asciiCharAt(t);
+	
+	//for(t=0;t<imap.length;t++)if(imap[t]!=aimap[t]){
+		//console.log("asc:"+imap[t]+"!="+aimap[t]);
+	//}
+	imap=aimap;
 /*
 	var imap=new Array(bmap.length);
 	for(t=0;t<imap.length;t++)imap[t]=bmap.charAt(t).charCodeAt();
@@ -79,7 +93,7 @@ define(["text!Everard+Island.map.txt"],function(bmap){
 	var units=pills.concat(bases.concat(starts));
 	for(var ui=0;ui<units.length;ui++){
 		var u=units[ui];
-		console.log("Unit:"+u.x+","+u.y);
+		//console.log("Unit:"+u.x+","+u.y);
 		var addr=(u.y*256)+u.x;
 		var cell=map[addr];
 		if(cell.length==1){
@@ -98,7 +112,7 @@ define(["text!Everard+Island.map.txt"],function(bmap){
 			break;
 		}
 		datalen-=4;
-		console.log("se:"+startx+","+endx);
+		//console.log("se:"+startx+","+endx);
 		var nibidx=0;
 		var nrun=0;
 		var ndif=0;
@@ -167,6 +181,9 @@ define(["text!Everard+Island.map.txt"],function(bmap){
 		//console.log(row);
 	}
 	return{
-		map: map
+		map: map,
+		pillboxes: pills,
+		bases: bases,
+		starts: starts
 	}
 })

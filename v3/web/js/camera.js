@@ -134,7 +134,7 @@ define([
 
         this._angles = vec3.create();
         this._position = vec3.create();
-        this.speed = 300;
+        this.speed = 700;
         this._pressedKeys = new Array(128);
         this._viewMat = mat4.create();
         this._cameraMat = mat4.create();
@@ -174,11 +174,11 @@ define([
                 }
 
                 self._angles[0] += yDelta * sensitivity;
-                if (self._angles[0] < -Math.PI * 0.25) {
-                    self._angles[0] = -Math.PI * 0.25;
+                if (self._angles[0] < -Math.PI * 0.45) {
+                    self._angles[0] = -Math.PI * 0.45;
                 }
-                if (self._angles[0] > Math.PI * 0.25) {
-                    self._angles[0] = Math.PI * 0.25;
+                if (self._angles[0] > Math.PI * 0.45) {
+                    self._angles[0] = Math.PI * 0.45;
                 }
 
                 self._dirty = true;
@@ -242,10 +242,10 @@ define([
         if (this._pressedKeys['D'.charCodeAt(0)]) {
             dir[0] += speed;
         }
-        if (this._pressedKeys[32]) { // Space, moves up
+        if (this._pressedKeys['R'.charCodeAt(0)]) { // 32 Space, moves up
             dir[2] += speed;
         }
-        if (this._pressedKeys[17]) { // Ctrl, moves down
+        if (this._pressedKeys['F'.charCodeAt(0)]) { // 17 Ctrl, moves down
             dir[2] -= speed;
         }
 
@@ -260,7 +260,8 @@ define([
 
             // Move the camera in the direction we are facing
             vec3.add(this._position, dir);
-
+			var groundHeight=0.33;
+			if(this._position[2]<groundHeight)this._position[2]=groundHeight;
             this._dirty = true;
         }
     };

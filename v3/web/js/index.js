@@ -6,9 +6,10 @@ require(["util/domReady!", // Waits for page load
 	"programs",
 	"js/bolomap.js",
 	"js/meshes/testmesh.js",
+	"js/textures.js",
     "js/util/gl-matrix.js",
 	
-], function(doc, display, glUtil,util,programs,bolomap,testmesh) { 
+], function(doc, display, glUtil,util,programs,bolomap,meshes,textures) { 
     "use strict";
     // Create gl context and start the render loop 
     var canvas = document.getElementById("canvas");
@@ -90,20 +91,20 @@ require(["util/domReady!", // Waits for page load
 		
 		
 		var meshList=[]
-		for(var me in testmesh)
+		for(var me in meshes)
 			meshList.push(me);
 		var meshMap={
-		"Building":testmesh.building,
-		"River":testmesh.river,
-		"Swamp":testmesh.grass,
-		"Crater":testmesh.grass,
-		"Road":testmesh.road01,
-		"Forest":testmesh.forest,
-		"Rubble":testmesh.dirt,
-		"Grass":testmesh.grass,
-		"ShotBuilding":testmesh.building02,
-		"RiverWithBoat":testmesh.river,
-		"Ocean":testmesh.ocean
+		"Building":meshes.building,
+		"River":meshes.river,
+		"Swamp":meshes.grass,
+		"Crater":meshes.grass,
+		"Road":meshes.road01,
+		"Forest":meshes.forest,
+		"Rubble":meshes.dirt,
+		"Grass":meshes.grass,
+		"ShotBuilding":meshes.building02,
+		"RiverWithBoat":meshes.river,
+		"Ocean":meshes.ocean
 		}
 		function buildPatch(mox,moy,sz)
 		{
@@ -127,29 +128,22 @@ require(["util/domReady!", // Waits for page load
 			}
 			return batch;
 		}
-		/*
-		for(var x=-10;x<10;x++)
-		for(var y=-10;y<10;y++)
-		for(var slc=0;slc<20;slc++){
-			var mat=mat4.identity(mat4.create());
-			mat4.translate(mat,[x*100,y*100,slc*-20.0]);
-			var scl=4.0*Math.pow(0.5,slc+2);
-			mat4.scale(mat,[scl,scl,scl]);
-			instanceMesh(planeData,mat,batch);
-		}
-		*/
 
-		var diffuse=glUtil.createSolidTexture(gl,[255,0,0,0]);
-		var texLoaded=false;
-		
 		function bindToUnit(unit){
 			gl.activeTexture(gl.TEXTURE0 + unit);
 			gl.bindTexture(gl.TEXTURE_2D, this);
 		}
+		var diffuse=glUtil.createSolidTexture(gl,[0,0,0,0]);
 		diffuse.bindToUnit=bindToUnit;
-
+		var tex=glUtil.loadTexture(gl,"tiles.png",function(glTex){
+			tex.bindToUnit=bindToUnit;
+			objects.updateActive({tex:tex,update:function(obj){
+				obj.diffuseSampler=tex;
+			}});
+		});
 		
-
+		var tileTexture=textures.get(gl,"tiles.png");
+		var skyTexture=textures.get(gl,"tiles.png");
 		
 		function buildPatchObject(x,y){
 			var batch=buildPatch(x,y);
@@ -166,34 +160,49 @@ require(["util/domReady!", // Waits for page load
 			//mat4.scale(obj.matrix,[sfrnd(10),sfrnd(10),sfrnd(10)]);
 			mat4.translate(obj.matrix,[x*100.0,y*100.0,0.0]);
 			return obj;
-		}		
+		}
 		
-		function genSquare(px,py,pz,rx,ry){
+		function addObject(meshName,x,y){
 			var obj=objects.allocate();
+			var batch=geomBatch();
+			mat4.identity(obj.matrix);
+			instanceMesh(meshes[meshName],obj.matrix,batch);
+			
+			var mesh=display.mesh(gl,
+				batch.vertices,
+				batch.indices,
+				batch.normals,
+				batch.uvs);
+			var meshRenderer = display.meshRenderer(gl,mesh,shader);
+			
 			obj.addComponent('meshRenderer',meshRenderer);
 			obj.diffuseSampler=diffuse;
-			mat4.identity(obj.matrix);
-			//mat4.scale(obj.matrix,[sfrnd(10),sfrnd(10),sfrnd(10)]);
-			mat4.translate(obj.matrix,[px,py,pz]);
-		//	mat4.rotateX(obj.matrix,rx);
-		//	mat4.rotateY(obj.matrix,ry);
+			
+				x-=100;
+				y-=100;
+				
+			mat4.translate(obj.matrix,[x*100.0,y*100.0,100.0]);			
 		}
 	//	for(var t=0;t<640;t++){
 	//		genSquare(sfrnd(10),sfrnd(10),sfrnd(10),sfrnd(Math.PI),sfrnd(Math.PI));
 	//	}
-		for(var x=-4;x<4;x++)
-		for(var y=-4;y<4;y++)//{
-			//if((x&1)==(y&1))
-			//var x=0;var y=0;
+
+
+
+		for(var x=-4;x<4;x++)for(var y=-4;y<4;y++)
 			buildPatchObject(x*10,y*10);//,30,3.14159,3.14159);
-		//}
-		var tex=glUtil.loadTexture(gl,"tiles.png",function(){
-			texLoaded=true;
-			tex.bindToUnit=bindToUnit;
-			objects.updateActive({tex:tex,update:function(obj){
-				obj.diffuseSampler=tex;
-			}});
-		});
+		
+		for(var i in bolomap.bases){var base=bolomap.bases[i];
+			addObject("skydome",diffuse,base.x,base.y);
+		}
+		for(var i in bolomap.pillboxes){var pill=bolomap.pillboxes[i];
+			addObject("skydome",diffuse,pill.x,pill.y);
+		}
+
+		for(var i in bolomap.starts){var start=bolomap.starts[i];
+			addObject("skydome",start.x,start.y);
+		}
+		
 	}
 	makeScene();
 	function sfrnd(rng){return ((Math.random()*rng)-(rng*0.5));}
