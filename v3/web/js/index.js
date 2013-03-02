@@ -6,10 +6,10 @@ require(["util/domReady!", // Waits for page load
 	"programs",
 	"js/bolomap.js",
 	"js/meshes/testmesh.js",
-	"js/textures.js",
+	//"js/textures.js",
     "js/util/gl-matrix.js",
 	
-], function(doc, display, glUtil,util,programs,bolomap,meshes,textures) { 
+], function(doc, display, glUtil,util,programs,bolomap,meshes) { //textures
     "use strict";
     // Create gl context and start the render loop 
     var canvas = document.getElementById("canvas");
@@ -142,8 +142,8 @@ require(["util/domReady!", // Waits for page load
 			}});
 		});
 		
-		var tileTexture=textures.get(gl,"tiles.png");
-		var skyTexture=textures.get(gl,"tiles.png");
+		//var tileTexture=textures.get(gl,"tiles.png");
+		//var skyTexture=textures.get(gl,"tiles.png");
 		
 		function buildPatchObject(x,y){
 			var batch=buildPatch(x,y);
