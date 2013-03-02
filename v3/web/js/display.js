@@ -90,6 +90,8 @@ define([
 	}
 	window.loadSession=function(){
 		var state=localStorage.state;
+		if(!state)
+			return;
 		state = JSON.parse(state);
 		v3cp(_display.camera._position , state.cameraPosition);
 		v3cp(_display.camera._angles , state.cameraAngles);

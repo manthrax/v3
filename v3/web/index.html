@@ -7,7 +7,7 @@
         <script type="text/javascript" src="js/util/tween.js" ></script>
         <script type="text/javascript" src="js/network.js"></script>
     </head>
-    <body onbeforeunload="console.log('app closed.');" oncontextmenu="return false;" style="cursor: crosshair">
+    <body onbeforeunload="if(window.saveSession)window.saveSession();console.log('app closed.');" oncontextmenu="return false;" style="cursor: crosshair">
 	<div id="display-frame">
 		<div class="uiElem" id="fpsContainer" style="top:3px;left:3px;">
 			<div><span id="fps"></span></div>
