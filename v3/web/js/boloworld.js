@@ -74,11 +74,11 @@ define([
                 if(getTile(mx-1,my)[0].name==name)dbits|=8;
                 return dbits;
             }
-            function buildPatch(mox,moy,sz)
+            function buildPatch(mox,moy,patchRad)
             {
                 var batch=display.geomBatch();
-                for(var x=-5;x<5;x++)
-                    for(var y=-5;y<5;y++){
+                for(var x=-patchRad;x<patchRad;x++)
+                    for(var y=-patchRad;y<patchRad;y++){
                         var mat=mat4.identity(mat4.create());
                         mat4.translate(mat,[x*tileDim,y*tileDim,0.0]);
 
@@ -163,8 +163,8 @@ define([
             //var tileTexture=textures.get(gl,"tiles.png");
             //var skyTexture=textures.get(gl,"tiles.png");
 
-            function buildPatchObject(x,y){
-                var batch=buildPatch(x,y);
+            function buildPatchObject(x,y,patchRad){
+                var batch=buildPatch(x,y,patchRad);
                 var mesh=display.mesh(gl,
                     batch.vertices,
                     batch.indices,
@@ -207,13 +207,15 @@ define([
             //	for(var t=0;t<640;t++){
             //		genSquare(sfrnd(10),sfrnd(10),sfrnd(10),sfrnd(Math.PI),sfrnd(Math.PI));
             //	}
-
-            for(var x=-4;x<4;x++)for(var y=-4;y<4;y++)
-                buildPatchObject(x*10,y*10);//,30,3.14159,3.14159);
-
+            var patchRad=8;
+            var rgnRad=5;
+            for(var x=-patchRad;x<patchRad;x++)for(var y=-patchRad;y<patchRad;y++){
+                //if((x&1)!=(y&1))
+                    buildPatchObject(x*(rgnRad*2),y*(rgnRad*2),rgnRad);//,30,3.14159,3.14159);
+            }
             for(var i in bolomap.bases){
                 var base=bolomap.bases[i];
-                addObject("tank",diffuse,base.x,base.y);
+                addObject("base",diffuse,base.x,base.y);
             }
             for(var i in bolomap.pillboxes){
                 var pill=bolomap.pillboxes[i];
@@ -222,7 +224,7 @@ define([
 
             for(var i in bolomap.starts){
                 var start=bolomap.starts[i];
-            //addObject("Cube018",diffuse,start.x,start.y);
+                addObject("boat",diffuse,start.x,start.y);
             }
 
         }

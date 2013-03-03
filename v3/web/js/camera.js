@@ -260,8 +260,9 @@ define([
 
             // Move the camera in the direction we are facing
             vec3.add(this._position, dir);
-			var groundHeight=0.33;
-			if(this._position[2]<groundHeight)this._position[2]=groundHeight;
+            //Clamp to area above ground..
+            var groundHeight=62.33;
+            if(this._position[2]<groundHeight)this._position[2]=groundHeight;
             this._dirty = true;
         }
     };
