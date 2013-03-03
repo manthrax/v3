@@ -14,7 +14,7 @@ define(["text!Everard+Island.map","text!Everard+Island.map.txt"],function(bmap,a
 	$.ajax({
 		url: '/v3/maps/',
 		async: false,
-		data: { filename: "zeddo.map" },
+		data: { filename: "Yellow Brick Road.map" },
 		dataType: "json"
 	}).done(function(data) {
 		if (data.error) {

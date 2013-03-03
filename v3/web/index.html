@@ -1,12 +1,20 @@
 <html>
     <head>
-        <link href="v2.css" rel="stylesheet" type="text/css">        
+        <link href="v2.css" rel="stylesheet" type="text/css" />
+        <link href="js/jquery-ui/css/smoothness/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css" />
         <title>v3</title> 
-        <script type="text/javascript" src="js/util/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="js/jquery-ui/js/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="js/jquery-ui/js/jquery-ui-1.10.1.custom.js"></script>
         <script type="text/javascript" src="js/socket.io-client/dist/socket.io.js"></script>
         <script type="text/javascript" src="js/util/require.js" data-main="js/index"></script>
         <script type="text/javascript" src="js/util/tween.js" ></script>
         <script type="text/javascript" src="js/network.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#dialog").dialog({
+			});
+		});
+	</script>
     </head>
     <body onbeforeunload="if(window.saveSession)window.saveSession();console.log('app closed.');" oncontextmenu="return false;" style="cursor: crosshair">
 	<div id="display-frame">
@@ -15,5 +23,7 @@
 		</div>
 		<canvas id="canvas" width="1024" height="768" style="width: 100%; height: 100%;"></canvas>
 	</div>
-	</body>
+	<div id="dialog" title="Select a map">
+	</div>
+    </body>
 </html>
