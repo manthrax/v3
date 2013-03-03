@@ -162,3 +162,5 @@ pip-log.txt
 # Mac crap
 .DS_Store
 /v3/web/nbproject/private/
+!/v3/web/js/socket.io-client/bin/
+!/v3/web/js/socket.io-client/dist/

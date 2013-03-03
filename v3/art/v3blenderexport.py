@@ -113,7 +113,7 @@ def bevent(evt):
 	elif (evt== EVENT_EXPORT):
 		fname = file_button.val
 		if(fname==''):
-			fname = 'C:/Users/thrax/Documents/NetBeansProjects/v3/web/js/meshes/testmesh.js'
+			fname = 'C:/Users/thrax/Documents/GitHub/v3/v3/web/js/meshes/testmesh.js'
 		out = file(fname, 'w')
 		sce = bpy.data.scenes.active
 		
